@@ -4,6 +4,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mi Tienda</title>
   <style>
+    theme: jekyll-theme-minimal
+    title: TiendaTest homepage
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -71,5 +73,4 @@
   </footer>
 </body>
 </html>
-theme: jekyll-theme-minimal
-title: TiendaTest homepage
+
