@@ -72,3 +72,5 @@
   </footer>
 </body>
 </html>
+theme: jekyll-theme-minimal
+title: TiendaTest homepage
