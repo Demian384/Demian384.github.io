@@ -4,17 +4,37 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Catálogo de Productos</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style1.css"/>
 </head>
+
 <body>
+   <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2F3b%2Fa4%2Fe3%2F3ba4e34f4cd985b7fdf0baa0c1056864.jpg&f=1&nofb=1&ipt=e75d007972b7909d0f7d289a901ec6eb7f15b6d440c26a11d51668f215bfabb7" alt="Logo">
+      <span>Basar "Zar"</span>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="buscador" placeholder="Buscar productos...">
+    </div>
+
+    <div class="contact-info">
+      <div>📍 Esteban de luca 1647</div>
+      <div>📞 (011) 1234-5678</div>
+    </div>
+  </header>
+
+   <!-- CONTENIDO -->
   <h1>🛍️ Catálogo de Productos</h1>
   <div id="productos" class="catalogo"></div>
   <div id="loading" class="loading">Cargando productos...</div>
 
   <script>
-    const SHEET_ID = "1obKolP4ymvk-uzkFbB5eDrrh5e8o9SVskaBLUEAe3ZY"; // <-- reemplazá con tu ID
-    const API_KEY = "AIzaSyAtxY5t7fOIcOwAdff4OSAyV6gtfY8H9E4";         // <-- reemplazá con tu clave API
-    const RANGE = "Hoja1!A2:D";           // A=Nombre, B=Descripción, C=Precio, D=Imagen_URL
+    const SHEET_ID = "1obKolP4ymvk-uzkFbB5eDrrh5e8o9SVskaBLUEAe3ZY"; // <-- Tu ID
+    const API_KEY = "AIzaSyAtxY5t7fOIcOwAdff4OSAyV6gtfY8H9E4";       // <-- Tu clave
+    const RANGE = "Hoja1!A2:D"; // A=Nombre, B=Descripción, C=Precio, D=Imagen_URL
+    const NUMERO_WHATSAPP = "5492944165050"
 
     async function cargarProductos() {
       try {
@@ -32,13 +52,19 @@
         let html = "";
         data.values.forEach(fila => {
           const [nombre, descripcion, precio, imagen] = fila;
+
+          const mensaje = encodeURIComponent(`Hola, estoy interesado en el producto "${nombre}"`);
+          const linkWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${mensaje}`;
           html += `
             <div class="producto">
               <img src="${imagen || 'sin-imagen.jpg'}" alt="${nombre}" onerror="this.src='sin-imagen.jpg';">
               <div class="info">
                 <h3>${nombre || 'Sin nombre'}</h3>
                 <p>${descripcion || 'Sin descripción'}</p>
-                <span class="precio">${precio ? '$' +  precio : ''}</span>
+                <span class="precio">${precio ? '$' + precio : ''}</span>
+                <a class="whatsapp-btn" href="${linkWhatsApp}" target="_blank" title="Consultar por WhatsApp">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png" alt="WhatsApp" />
+                </a>
               </div>
             </div>
           `;
@@ -50,6 +76,17 @@
         document.getElementById("loading").innerText = "❌ Error al cargar los productos.";
       }
     }
+
+    // 🔍 Filtro del buscador
+    document.getElementById("buscador").addEventListener("input", e => {
+      const filtro = e.target.value.toLowerCase();
+      const productos = document.querySelectorAll(".producto");
+      productos.forEach(p => {
+        const nombre = p.querySelector("h3").textContent.toLowerCase();
+        const descripcion = p.querySelector("p").textContent.toLowerCase();
+        p.style.display = (nombre.includes(filtro) || descripcion.includes(filtro)) ? "block" : "none";
+      });
+    });
 
     cargarProductos();
   </script>
