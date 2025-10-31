@@ -59,6 +59,10 @@
         text-align: center;
       }
     }
+        /* === LAYOUT PRINCIPAL === */
+    .main-container {
+      display: flex;
+    }
 
     /* === PRODUCTOS === */
 
@@ -162,4 +166,38 @@
       color: #777;
       font-size: 1.1rem;
       margin-top: 40px;
+    }
+
+     /* === BARRA LATERAL === */
+    aside {
+      width: 200px;
+      background-color: #edf2f4;
+      padding: 20px;
+      border-right: 2px solid #ccc;
+      min-height: calc(100vh - 80px);
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    aside h3 {
+      margin-top: 0;
+      color: #2b2d42;
+    }
+
+    .categoria {
+      cursor: pointer;
+      padding: 8px 10px;
+      margin: 5px 0;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+      color: #2b2d42;
+      font-weight: 500;
+    }
+
+    .categoria:hover, .categoria.activa {
+      background-color: #2b2d42;
+      color: white;
     }

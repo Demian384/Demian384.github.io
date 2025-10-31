@@ -9,6 +9,7 @@
 
 <body>
    <!-- HEADER -->
+    
   <header>
     <div class="logo">
       <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2F3b%2Fa4%2Fe3%2F3ba4e34f4cd985b7fdf0baa0c1056864.jpg&f=1&nofb=1&ipt=e75d007972b7909d0f7d289a901ec6eb7f15b6d440c26a11d51668f215bfabb7" alt="Logo">
@@ -25,16 +26,32 @@
     </div>
   </header>
 
-   <!-- CONTENIDO -->
-  <h1>🛍️ Catálogo de Productos</h1>
-  <div id="productos" class="catalogo"></div>
-  <div id="loading" class="loading">Cargando productos...</div>
+   <!-- CONTENIDO PRINCIPAL -->
 
+  <div class="main-container">
+
+    <!-- BARRA LATERAL -->
+
+  <aside>
+      <h3>Categorías</h3>
+      <div id="lista-categorias"></div>
+  </aside>
+
+    <!-- CATÁLOGO -->
+    <main style="flex: 1;">
+      <h1 style="text-align:center;">🛍️ Catálogo de Productos</h1>
+      <div id="productos" class="catalogo"></div>
+      <div id="loading" class="loading">Cargando productos...</div>
+    </main>
+  </div>
+  
   <script>
     const SHEET_ID = "1obKolP4ymvk-uzkFbB5eDrrh5e8o9SVskaBLUEAe3ZY"; // <-- Tu ID
     const API_KEY = "AIzaSyAtxY5t7fOIcOwAdff4OSAyV6gtfY8H9E4";       // <-- Tu clave
-    const RANGE = "Hoja1!A2:D"; // A=Nombre, B=Descripción, C=Precio, D=Imagen_URL
+    const RANGE = "Hoja1!A2:E"; // A=Nombre, B=Descripción, C=Precio, D=Imagen_URL, E=Categoría
     const NUMERO_WHATSAPP = "5492944165050"
+    let categoriasSet = new Set();
+
 
     async function cargarProductos() {
       try {
@@ -44,6 +61,18 @@
         const loader = document.getElementById("loading");
         loader.style.display = "none";
 
+        productosData = data.values || [];
+        
+        // 🔹 Capturamos las categorías únicas de la hoja (columna E)
+          categoriasSet.clear();
+          productosData.forEach(fila => {
+          const categoria = fila[4] || "Sin categoría";
+          categoriasSet.add(categoria);
+});
+
+          // 🔹 Generamos la barra lateral de forma automática
+          renderizarCategorias();
+
         if (!data.values || data.values.length === 0) {
           contenedor.innerHTML = "<p>No hay productos disponibles.</p>";
           return;
@@ -51,12 +80,12 @@
 
         let html = "";
         data.values.forEach(fila => {
-          const [nombre, descripcion, precio, imagen] = fila;
+          const [nombre, descripcion, precio, imagen, categoria] = fila;
 
           const mensaje = encodeURIComponent(`Hola, estoy interesado en el producto "${nombre}"`);
           const linkWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${mensaje}`;
           html += `
-            <div class="producto">
+            <div class="producto" data-cat="${categoria || 'Sin categoría'}">
               <img src="${imagen || 'sin-imagen.jpg'}" alt="${nombre}" onerror="this.src='sin-imagen.jpg';">
               <div class="info">
                 <h3>${nombre || 'Sin nombre'}</h3>
@@ -87,6 +116,42 @@
         p.style.display = (nombre.includes(filtro) || descripcion.includes(filtro)) ? "block" : "none";
       });
     });
+
+      function renderizarCategorias() {
+        const contenedor = document.getElementById("lista-categorias");
+        contenedor.innerHTML = ""; // Limpiar categorías previas
+
+  // 🔹 Opción "Todas"
+        const todas = document.createElement("div");
+        todas.className = "categoria activa";
+        todas.dataset.cat = "todas";
+        todas.textContent = "Todas";
+        contenedor.appendChild(todas);
+
+  // 🔹 Crear categoría por cada valor único
+      [...categoriasSet].sort().forEach(cat => {
+        const item = document.createElement("div");
+        item.className = "categoria";
+        item.dataset.cat = cat;
+        item.textContent = cat;
+        contenedor.appendChild(item);
+  });
+
+  // 🔹 Activar filtro
+  document.querySelectorAll(".categoria").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".categoria").forEach(c => c.classList.remove("activa"));
+      btn.classList.add("activa");
+
+      const cat = btn.dataset.cat;
+      const productos = document.querySelectorAll(".producto");
+      productos.forEach(p => {
+        const productoCat = p.dataset.cat || "Sin categoría";
+        p.style.display = (cat === "todas" || productoCat === cat) ? "block" : "none";
+      });
+    });
+  });
+}
 
     cargarProductos();
   </script>
