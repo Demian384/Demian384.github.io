@@ -610,3 +610,95 @@ input, textarea {
     user-select: text;
     caret-color: auto;
 }
+
+/* ==== 🔧 Ajuste de layout responsive del header ==== */
+/* @media (max-width: 768px) {
+  header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--spacing-sm);
+  }
+
+  .logo {
+    justify-content: center;
+  }
+
+  .search-bar {
+    order: 2;
+    width: 100%;
+    max-width: 320px;
+    margin: var(--spacing-xs) 0;
+  }
+
+  .contact-info {
+    order: 3;
+    text-align: center;
+  }
+
+  .menu-btn {
+    order: 4;
+    display: block;
+    position: static;
+    transform: none;
+    margin-top: var(--spacing-sm);
+    width: 90%;
+    max-width: 300px;
+  }
+} */
+
+/* ==== 🔧 Layout responsive mejorado del header ==== */
+@media (max-width: 768px) {
+  header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--spacing-sm);
+  }
+
+  .logo {
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* Fila combinada de buscador + contacto */
+  .header-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .search-bar {
+    flex: 1;
+    min-width: 160px;
+    max-width: 280px;
+    margin: 0;
+  }
+
+  .search-bar input {
+    width: 100%;
+  }
+
+  .contact-info {
+    flex: 1;
+    min-width: 160px;
+    max-width: 200px;
+    text-align: center;
+  }
+
+  .menu-btn {
+    order: 4;
+    display: block;
+    position: static;
+    transform: none;
+    margin-top: var(--spacing-sm);
+    width: 90%;
+    max-width: 300px;
+  }
+}
