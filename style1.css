@@ -612,43 +612,6 @@ input, textarea {
 }
 
 /* ==== 🔧 Ajuste de layout responsive del header ==== */
-/* @media (max-width: 768px) {
-  header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: var(--spacing-sm);
-  }
-
-  .logo {
-    justify-content: center;
-  }
-
-  .search-bar {
-    order: 2;
-    width: 100%;
-    max-width: 320px;
-    margin: var(--spacing-xs) 0;
-  }
-
-  .contact-info {
-    order: 3;
-    text-align: center;
-  }
-
-  .menu-btn {
-    order: 4;
-    display: block;
-    position: static;
-    transform: none;
-    margin-top: var(--spacing-sm);
-    width: 90%;
-    max-width: 300px;
-  }
-} */
-
-/* ==== 🔧 Layout responsive mejorado del header ==== */
 @media (max-width: 768px) {
   header {
     display: flex;
@@ -700,5 +663,52 @@ input, textarea {
     margin-top: var(--spacing-sm);
     width: 90%;
     max-width: 300px;
+  }
+}
+
+/* === 🔧 Ajuste de posición del Aside para pantallas pequeñas === */
+@media (max-width: 768px) {
+  aside {
+    position: fixed;
+    top: auto; /* eliminamos top fijo */
+    left: 0;
+    right: 0;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1200;
+    background-color: var(--color-background);
+    border-bottom: 2px solid var(--color-primary-light);
+    border-right: none;
+    width: 100%;
+    max-height: 70vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+  }
+
+  aside.activo {
+    transform: translateY(0); /* aparece deslizándose desde arriba */
+  }
+
+  /* Fondo de bloqueo (backdrop) */
+  .aside-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .aside-backdrop.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* Ajustes menores visuales */
+  aside h2 {
+    margin-top: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
   }
 }
