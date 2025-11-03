@@ -1,4 +1,3 @@
-
 /* ====== 🎨 Variables y configuración global ====== */
 :root {
     /* Colores */
@@ -88,6 +87,8 @@ body {
     font-family: system-ui, -apple-system, sans-serif;
     color: var(--color-text);
     background: #fff;
+    user-select: none;
+    caret-color: transparent;
 }
 
 /* ====== 📱 Layout Principal ====== */
@@ -190,15 +191,15 @@ aside.activo {
     /* El contenedor principal ocupa el espacio restante bajo el header */
     /* Contenedor principal */
     .main-container {
-      display: flex;
-      flex: 1 1 auto;
-      width: 100%;
-      max-width: 1440px;
-      margin: 0 auto;
-      overflow-x: hidden;
-      align-items: stretch;
-      gap: 20px;
-      padding: 0 20px;
+    display: flex;
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    overflow-x: hidden;
+    align-items: stretch;
+    gap: 20px;
+    padding: 0;
     }
 
     /* ====== 🧩 Componentes ====== */
@@ -283,7 +284,8 @@ main {
 
     /* Precio */
     .precio {
-        display: inline-block;
+        display: block;
+        margin: 0 auto;
         color: var(--color-primary);
         font-weight: var(--font-weight-bold);
         font-size: var(--text-lg);
@@ -309,7 +311,10 @@ main {
         width: 30px;       
         height: 30px;
         text-decoration: none;
-        float: right;     
+        position: absolute;
+        top: var(--spacing-xs);
+        right: var(--spacing-xs);
+        float: none;
         margin-top: var(--spacing-xs);
         transition: var(--transition-background), var(--transition-transform);
     }
@@ -353,7 +358,7 @@ main {
 aside {
     width: 200px;
     background-color: var(--color-background);
-    padding: var(--spacing-lg);
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
     border-right: 2px solid var(--color-text-light);
     position: sticky;
     top: 0;
