@@ -235,15 +235,18 @@ crearControlesPaginacion();
 
       const cat = btn.dataset.cat;
       // 🔹 Filtrar productos por categoría
-productosFiltrados = productosData.filter(fila => {
-  const categoriaFila = fila[4] || "Sin categoría";
-  return cat === "todas" || categoriaFila === cat;
-});
+      productosFiltrados = productosData.filter(fila => {
+        const categoriaFila = fila[4] || "Sin categoría";
+        return cat === "todas" || categoriaFila === cat;
+      });
 
-// 🔹 Reiniciar paginación
-paginaActual = 1;
-renderizarPagina(paginaActual);
-crearControlesPaginacion();
+      // 🔹 Reiniciar paginación
+      paginaActual = 1;
+      renderizarPagina(paginaActual);
+      crearControlesPaginacion();
+
+      // 🔹 Cerrar el menú después de seleccionar una categoría
+      closeAsideMobile();
     });
   });
 }

@@ -117,7 +117,7 @@ aside.activo {
   position: fixed;
   inset: 0; /* top:0; right:0; bottom:0; left:0 */
   background: rgba(0,0,0,0.35);
-  z-index: 1040; /* below aside but above page content */
+  z-index: 1150; /* between header and aside */
   opacity: 0;
   transition: opacity 0.2s ease;
   pointer-events: none;
@@ -468,20 +468,29 @@ aside {
 
     /* Panel lateral móvil */
     aside {
-        width: 320px;
-        max-width: 90%;
+        width: 260px;
+        max-width: 80%;
         border-right: none;
-        border-bottom: 2px solid var(--color-text-light);
-        height: calc(100vh - var(--header-height));
+        height: auto;
+        max-height: 80vh;
         position: fixed;
-        left: var(--spacing-md);
-        transform: translateX(-120%);
+        top: calc(var(--header-height) + var(--spacing-lg));
+        right: var(--spacing-sm);
+        left: auto;
+        transform: translateX(120%);
         transition: var(--transition-transform);
         overflow-y: auto;
-        z-index: 1050;
+        z-index: 1200;
         background-color: var(--color-background);
         border-radius: var(--border-radius);
         box-shadow: var(--shadow-lg);
+        padding: var(--spacing-md);
+    }
+
+    @media (max-width: 480px) {
+        aside {
+            top: var(--spacing-sm); /* En móviles, pegado arriba */
+        }
     }
 
     /* Catálogo */
@@ -576,15 +585,23 @@ aside {
             display: block;
         }
 
-        aside nav {
-            padding: var(--spacing-md);
-        }
+    aside nav {
+        padding: 0;
+    }
+
+    aside h2 {
+        margin-bottom: var(--spacing-sm);
+        font-size: var(--text-base);
+    }
+
+    aside .categoria {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: var(--text-sm);
+    }
 
     main {
         padding: var(--spacing-md) var(--spacing-sm);
-    }
-
-    .catalogo {
+    }    .catalogo {
         padding: 0;
     }
 }
