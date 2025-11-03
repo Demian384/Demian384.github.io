@@ -1,51 +1,81 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Catálogo de Productos</title>
-  <link rel="stylesheet" href="style1.css"/>
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Catálogo de productos del Bazar Zar - Encuentra todo lo que necesitas para tu hogar" />
+        <meta name="theme-color" content="#2b2d42" />
+        <title>Catálogo de Productos - Bazar Zar</title>
+        <link rel="stylesheet" href="style1.css"/>
+    </head>
 
-<body>
-   <!-- HEADER -->
-    
-  <header>
-    <div class="logo">
-      <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2F3b%2Fa4%2Fe3%2F3ba4e34f4cd985b7fdf0baa0c1056864.jpg&f=1&nofb=1&ipt=e75d007972b7909d0f7d289a901ec6eb7f15b6d440c26a11d51668f215bfabb7" alt="Logo">
-      <span>Basar "Zar"</span>
-    </div>
+    <body>
+        <!-- Encabezado principal -->
+        <header>
+            <div class="logo">
+                <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2F3b%2Fa4%2Fe3%2F3ba4e34f4cd985b7fdf0baa0c1056864.jpg&f=1&nofb=1&ipt=e75d007972b7909d0f7d289a901ec6eb7f15b6d440c26a11d51668f215bfabb7" 
+                     alt="Logo Bazar Zar"
+                     width="50"
+                     height="50">
+                <span>Bazar "Zar"</span>
+            </div>
 
-    <div class="search-bar">
-      <input type="text" id="buscador" placeholder="Buscar productos...">
-    </div>
+            <div class="search-bar">
+                <label for="buscador" class="sr-only">Buscar productos</label>
+                <input type="text" 
+                       id="buscador" 
+                       name="buscador"
+                       placeholder="Buscar productos..."
+                       aria-label="Buscar productos">
+            </div>
 
-    <div class="contact-info">
-      <div>📍 Esteban de luca 1647</div>
-      <div>📞 (011) 1234-5678</div>
-    </div>
-    <button id="menu-toggle" class="menu-btn">☰ Categorías</button>
-  </header>
+            <div class="contact-info">
+                <address>
+                    <div>📍 Esteban de Luca 1647</div>
+                    <div>📞 <a href="tel:01112345678">(011) 1234-5678</a></div>
+                </address>
+            </div>
+            
+            <button id="menu-toggle" 
+                    class="menu-btn" 
+                    aria-label="Abrir menú de categorías"
+                    aria-expanded="false">
+                ☰ Categorías
+            </button>
+        </header>
 
 
-   <!-- CONTENIDO PRINCIPAL -->
+        <!-- Contenedor principal -->
+        <div class="main-container">
+            <!-- Barra lateral de categorías -->
+            <aside>
+                <nav aria-label="Categorías de productos">
+                    <h2>Categorías</h2>
+                    <div id="lista-categorias" 
+                         role="tablist" 
+                         aria-label="Filtrar productos por categoría"></div>
+                </nav>
+            </aside>
 
-  <div class="main-container">
-
-    <!-- BARRA LATERAL -->
-
-  <aside>
-      <h3>Categorías</h3>
-      <div id="lista-categorias"></div>
-  </aside>
-
-    <!-- CATÁLOGO -->
-    <main style="flex: 1;">
-      <h1 style="text-align:center;">🛍️ Catálogo de Productos</h1>
-      <div id="productos" class="catalogo"></div>
-      <div id="loading" class="loading">Cargando productos...</div>
-    </main>
-  </div>
+            <!-- Contenido principal -->
+            <main>
+                <h1>🛍️ Catálogo de Productos</h1>
+                
+                <section aria-label="Productos">
+                    <div id="productos" 
+                         class="catalogo" 
+                         role="grid" 
+                         aria-busy="true"></div>
+                    
+                    <div id="loading" 
+                         class="loading" 
+                         role="status" 
+                         aria-live="polite">
+                        Cargando productos...
+                    </div>
+                </section>
+            </main>
+        </div>
   
   <script>
     const SHEET_ID = "1obKolP4ymvk-uzkFbB5eDrrh5e8o9SVskaBLUEAe3ZY"; // <-- Tu ID
@@ -54,7 +84,7 @@
     const NUMERO_WHATSAPP = "5492944165050"
     let categoriasSet = new Set();
     let paginaActual = 1;
-    const productosPorPagina = 8;
+    const productosPorPagina = 10;
     let productosFiltrados = [];
     let productosData = [];
 
@@ -118,63 +148,45 @@
 
     // 🔍 Filtro del buscador
     document.getElementById("buscador").addEventListener("input", e => {
-      const filtro = e.target.value.toLowerCase();
+      const filtro = e.target.value.toLowerCase().trim();
       
-  // 🔹 Filtrar productos por nombre o descripción
-  productosFiltrados = productosData.filter(fila => {
-    const nombre = fila[0]?.toLowerCase() || "";
-    const descripcion = fila[1]?.toLowerCase() || "";
-    return nombre.includes(filtro) || descripcion.includes(filtro);
-  });
-
-  // 🔹 Reiniciar a la primera página
-  paginaActual = 1;
-  renderizarPagina(paginaActual);
-  crearControlesPaginacion();
-});
-/*       const productos = document.querySelectorAll(".producto");
-      productos.forEach(p => {
-        const nombre = p.querySelector("h3").textContent.toLowerCase();
-        const descripcion = p.querySelector("p").textContent.toLowerCase();
-        p.style.display = (nombre.includes(filtro) || descripcion.includes(filtro)) ? "block" : "none"; */
-
-       
-
-/*       function renderizarCategorias() {
-        const contenedor = document.getElementById("lista-categorias");
-        contenedor.innerHTML = ""; // Limpiar categorías previas
-
-  // 🔹 Opción "Todas"
-        const todas = document.createElement("div");
-        todas.className = "categoria activa";
-        todas.dataset.cat = "todas";
-        todas.textContent = "Todas";
-        contenedor.appendChild(todas);
-
-  // 🔹 Crear categoría por cada valor único
-      [...categoriasSet].sort().forEach(cat => {
-        const item = document.createElement("div");
-        item.className = "categoria";
-        item.dataset.cat = cat;
-        item.textContent = cat;
-        contenedor.appendChild(item);
-  });
-
-  // 🔹 Activar filtro
-  document.querySelectorAll(".categoria").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".categoria").forEach(c => c.classList.remove("activa"));
-      btn.classList.add("activa");
-
-      const cat = btn.dataset.cat;
-      const productos = document.querySelectorAll(".producto");
-      productos.forEach(p => {
-        const productoCat = p.dataset.cat || "Sin categoría";
-        p.style.display = (cat === "todas" || productoCat === cat) ? "block" : "none";
+      // 🔹 Filtrar productos por nombre o descripción
+      productosFiltrados = productosData.filter(fila => {
+        const nombre = fila[0]?.toLowerCase() || "";
+        const descripcion = fila[1]?.toLowerCase() || "";
+        return nombre.includes(filtro) || descripcion.includes(filtro);
       });
-    });
-  });
-} */
+
+      // 🔹 Reiniciar a la primera página
+      paginaActual = 1;
+      
+      // 🔹 Primero renderizar la página
+      renderizarPagina(paginaActual);
+      
+      // 🔹 Gestión de la paginación
+      const paginacionExistente = document.getElementById("paginacion");
+      
+      // Si no hay filtro, mostrar todos los productos con paginación
+      if (filtro === "") {
+        if (!paginacionExistente) {
+          crearControlesPaginacion();
+        }
+      } 
+      // Si hay filtro y no hay resultados, eliminar paginación
+      else if (productosFiltrados.length === 0) {
+        if (paginacionExistente) {
+          paginacionExistente.remove();
+        }
+      } 
+      // Si hay resultados filtrados, actualizar paginación
+      else {
+        crearControlesPaginacion();
+      }
+
+      // 🔹 Actualizar el estado de aria-busy en el contenedor
+      const contenedor = document.getElementById("productos");
+      contenedor.setAttribute("aria-busy", "false");
+});
 
 function renderizarCategorias() {
   const contenedor = document.getElementById("lista-categorias");
@@ -237,9 +249,20 @@ crearControlesPaginacion();
 }
 function renderizarPagina(pagina) {
   const contenedor = document.getElementById("productos");
+  
+  // Si hay un filtro activo y no hay resultados
+  if (productosFiltrados.length === 0 && document.getElementById("buscador").value.trim() !== "") {
+    contenedor.innerHTML = `
+      <div class="no-results" role="alert" aria-live="polite">
+        <p>😕 No se encontraron productos que coincidan con tu búsqueda.</p>
+        <p>Por favor, intenta con otros términos.</p>
+      </div>
+    `;
+    return;
+  }
+
   const inicio = (pagina - 1) * productosPorPagina;
   const fin = inicio + productosPorPagina;
-
   const productosPagina = (productosFiltrados.length > 0 ? productosFiltrados : productosData).slice(inicio, fin);
   let html = "";
 

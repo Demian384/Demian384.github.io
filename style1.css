@@ -59,6 +59,19 @@
     padding: 0;
 }
 
+/* Utilidad para lectores de pantalla */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 /* ====== 📝 Elementos base ====== */
 html, body {
     width: 100%;
@@ -143,20 +156,36 @@ aside.activo {
         font-size: var(--text-base);
     }
 
-    .contact-info {
-      text-align: right;
-      font-size: 0.9rem;
+/* Información de contacto */
+.contact-info {
+    text-align: right;
+    font-size: var(--text-sm);
+}
+
+    .contact-info address {
+        font-style: normal;
     }
 
-    @media (max-width: 600px) {
-      header {
+        .contact-info address a {
+            color: var(--color-white);
+            text-decoration: none;
+            transition: var(--transition-default);
+        }
+
+        .contact-info address a:hover {
+            text-decoration: underline;
+        }
+
+@media (max-width: 600px) {
+    header {
         flex-direction: column;
         text-align: center;
-      }
-      .contact-info {
-        text-align: center;
-      }
     }
+    
+    .contact-info {
+        text-align: center;
+    }
+}
         /* === LAYOUT PRINCIPAL === */
     /* El contenedor principal ocupa el espacio restante bajo el header */
     /* Contenedor principal */
@@ -174,18 +203,32 @@ aside.activo {
 
     /* ====== 🧩 Componentes ====== */
 
-    /* Catálogo de productos */
-    h1 {
-      text-align: center;
-      color: var(--color-primary);
+/* Contenido principal */
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) 0;
+}
+
+    main h1 {
+        text-align: center;
+        color: var(--color-primary);
+        margin: var(--spacing-xs) 0;
+        font-size: var(--text-xl);
+    }
+
+    main section {
+        flex: 1;
     }
 
 /* Catálogo de productos */
 .catalogo {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: var(--spacing-lg);
-    padding: var(--spacing-lg);
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--spacing-md);
+    padding: 0 var(--spacing-md);
     width: 100%;
     max-width: 100%;
 }
@@ -194,9 +237,11 @@ aside.activo {
     background: var(--color-white);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm);
     text-align: center;
     transition: var(--transition-default);
+    display: flex;
+    flex-direction: column;
 }
 
     .producto:hover {
@@ -206,73 +251,102 @@ aside.activo {
 
     .producto img {
         width: 100%;
-        height: 180px;
+        height: 140px;
         object-fit: cover;
-        border-radius: var(--border-radius);
-        margin-bottom: var(--spacing-sm);
+        border-radius: var(--border-radius-sm);
+        margin-bottom: var(--spacing-xs);
     }
 
     .producto h3 {
         margin: var(--spacing-xs) 0;
         color: var(--color-text);
+        font-size: var(--text-sm);
+        line-height: 1.3;
+        /* Limitar a 2 líneas de texto */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
     .producto p {
         color: var(--color-text-light);
-        font-size: var(--text-sm);
+        font-size: var(--text-xs);
+        /* Limitar a 3 líneas de texto */
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin-bottom: var(--spacing-xs);
+        line-height: 1.4;
     }
 
     /* Precio */
     .precio {
-      display: inline-block;
-      color: var(--color-primary);
-      font-weight: var(--font-weight-bold);
-      font-size: var(--text-xl);
-      padding: var(--spacing-xs) var(--spacing-md);
-      border-radius: var(--border-radius-lg);
-      margin-left: var(--spacing-xl);
-      text-align: center;
-      box-shadow: var(--shadow-sm);
-      transition: var(--transition-transform), box-shadow var(--transition-default);
+        display: inline-block;
+        color: var(--color-primary);
+        font-weight: var(--font-weight-bold);
+        font-size: var(--text-lg);
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border-radius: var(--border-radius-md);
+        margin-left: var(--spacing-sm);
+        text-align: center;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition-transform), box-shadow var(--transition-default);
     }
 
-    .precio:hover {
-      transform: scale(1.05);
-      box-shadow: var(--shadow-md);
-    }
+        .precio:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
 
     /* Botón de WhatsApp */
     .whatsapp-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      width: 36px;       
-      height: 36px;
-      text-decoration: none;
-      float: right;     
-      margin-top: var(--spacing-xs);
-      transition: var(--transition-background), var(--transition-transform);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 30px;       
+        height: 30px;
+        text-decoration: none;
+        float: right;     
+        margin-top: var(--spacing-xs);
+        transition: var(--transition-background), var(--transition-transform);
     }
 
-    .whatsapp-btn img {
-      width: 25px;
-      height: 25px;
-      display: block;
-      margin: auto;
-      object-fit: contain;
-    }
+        .whatsapp-btn img {
+            width: 20px;
+            height: 20px;
+            display: block;
+            margin: auto;
+            object-fit: contain;
+        }
 
     .whatsapp-btn:hover {
       background-color: var(--color-whatsapp);
       transform: scale(1.1);
     }
 
-    .loading {
+    .loading, .no-results {
       text-align: center;
-      color: #777;
-      font-size: 1.1rem;
-      margin-top: 40px;
+      color: var(--color-text-light);
+      font-size: var(--text-lg);
+      margin: var(--spacing-xl) auto;
+      max-width: 600px;
+      padding: var(--spacing-xl);
+      background-color: var(--color-background);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .no-results p {
+      margin: var(--spacing-md) 0;
+    }
+
+    .no-results p:first-child {
+      font-size: var(--text-xl);
+      color: var(--color-primary);
+      font-weight: var(--font-weight-medium);
     }
 
  /* === BARRA LATERAL === */
@@ -288,9 +362,14 @@ aside {
     flex-shrink: 0;
 }
 
-    aside h3 {
-        margin-top: 0;
+    aside nav {
+        width: 100%;
+    }
+
+    aside h2 {
+        margin: 0 0 var(--spacing-md);
         color: var(--color-primary);
+        font-size: var(--text-lg);
     }
 
     .categoria {
@@ -301,6 +380,9 @@ aside {
         transition: var(--transition-background);
         color: var(--color-primary);
         font-weight: var(--font-weight-medium);
+        display: block;
+        width: 100%;
+        text-align: left;
     }
 
     .categoria:hover,
@@ -310,7 +392,6 @@ aside {
     }
     
 /* Paginación */
-/* Paginación */
 #paginacion {
     display: flex;
     justify-content: center;
@@ -318,7 +399,7 @@ aside {
     gap: var(--spacing-sm);
     flex-wrap: wrap;
     margin: var(--spacing-xl) 0;
-}
+  }
 
     #paginacion button {
         background-color: var(--color-primary);
@@ -474,19 +555,31 @@ aside {
 
 /* Responsive: Pantallas medianas (tablets) */
 @media (max-width: 768px) {
-  .menu-btn {
-    display: block;
-  }
+    .menu-btn {
+        display: block;
+    }
 
-  aside {
-    display: none;
-    width: 100%;
-    background-color: var(--color-background);
-    padding: var(--spacing-sm);
-    border-bottom: 2px solid var(--color-text-light);
-  }
+    aside {
+        display: none;
+        width: 100%;
+        background-color: var(--color-background);
+        padding: var(--spacing-sm);
+        border-bottom: 2px solid var(--color-text-light);
+    }
 
-  aside.activo {
-    display: block;
-  }
+        aside.activo {
+            display: block;
+        }
+
+        aside nav {
+            padding: var(--spacing-md);
+        }
+
+    main {
+        padding: var(--spacing-md) var(--spacing-sm);
+    }
+
+    .catalogo {
+        padding: 0;
+    }
 }
