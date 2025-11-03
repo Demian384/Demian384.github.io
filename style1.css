@@ -1,20 +1,57 @@
 
+    /* Global box-sizing and page sizing */
+    *, *::before, *::after { box-sizing: border-box; }
+
     html, body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-}
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      overflow-x: hidden; /* prevent horizontal scroll */
+    }
+
+    /* Make body a column flex container so header + main layout works */
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      height: 100%;
+    }
         /* === HEADER === */
     header {
-/*   width: 100%; */
+      width: 100%;
       margin: 0;
-      padding: 15px 40px;
+      padding: 15px;
+      box-sizing: border-box;
+      position: relative; /* permitir posicionar elementos absolutos dentro del header */
       background-color: #2b2d42;
+      z-index: 1100; /* mantener header por encima del panel móvil */
       color: white;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
+}
+
+/* when aside is active on mobile (class added), slide it into view */
+aside.activo {
+  transform: translateX(0) !important;
+}
+
+/* backdrop shown when mobile aside is open */
+.aside-backdrop {
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  background: rgba(0,0,0,0.35);
+  z-index: 1040; /* below aside but above page content */
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+.aside-backdrop.visible {
+  opacity: 1;
+  pointer-events: auto;
 }
     .logo {
       display: flex;
@@ -60,8 +97,15 @@
       }
     }
         /* === LAYOUT PRINCIPAL === */
+    /* El contenedor principal ocupa el espacio restante bajo el header */
     .main-container {
       display: flex;
+      flex: 1 1 auto; /* allow growing to fill viewport */
+      max-width: 100%;
+      width: 100%;
+      margin: 0 auto;
+      overflow-x: hidden;
+      align-items: stretch; /* ensure children (aside/main) stretch vertically */
     }
 
     /* === PRODUCTOS === */
@@ -75,7 +119,9 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 20px;
-      padding: 20px 40px;
+      padding: 20px;
+      width: 100%;
+      max-width: 100%;
     }
 
     .producto {
@@ -169,17 +215,16 @@
     }
 
      /* === BARRA LATERAL === */
+    /* Barra lateral: mantener ancho fijo, no encoger y estirarse verticalmente */
     aside {
       width: 200px;
       background-color: #edf2f4;
       padding: 20px;
       border-right: 2px solid #ccc;
-      min-height: calc(100vh - 80px);
       position: sticky;
-      top: 0;
-      align-self: flex-start;
-      height: 100vh;
-      overflow-y: auto;
+      top: 0; /* sticky dentro del flujo principal (queda debajo del header) */
+      align-self: stretch; /* estira para ocupar la altura del .main-container */
+      flex-shrink: 0; /* no permitir que se encoja en pantallas grandes */
     }
 
     aside h3 {
@@ -201,3 +246,169 @@
       background-color: #2b2d42;
       color: white;
     }
+    
+#paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 30px 0;
+}
+
+#paginacion button {
+  background-color: #2b2d42;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: all 0.25s ease;
+}
+
+#paginacion button:hover:not(:disabled) {
+  background-color: #3f4566;
+  transform: translateY(-2px);
+}
+
+#paginacion button:disabled {
+  background-color: #b0b0b0;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+#paginacion span {
+  background-color: #edf2f4;
+  padding: 8px 14px;
+  border-radius: 25px;
+  font-weight: bold;
+  color: #2b2d42;
+  font-size: 0.95rem;
+}
+
+/* ====== 📱 Diseño responsive ====== */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 15px;
+  }
+
+  header h1 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+  }
+
+  #buscador {
+    width: 90%;
+    max-width: 400px;
+    margin-bottom: 10px;
+  }
+
+  main {
+    flex-direction: column;
+  }
+
+  /* Mobile: aside acts as a slide-in panel under the header, not full-page */
+  aside {
+    width: 320px;
+    max-width: 90%;
+    border-right: none;
+    border-bottom: 2px solid #ccc;
+    height: calc(100vh - var(--header-height, 56px));
+    position: fixed;
+    left: 12px;
+    /* top is set dynamically by JS to match header height */
+    transform: translateX(-120%); /* hidden by default (off-canvas to the left) */
+    transition: transform 0.25s ease;
+    overflow-y: auto;
+    z-index: 1050; /* below header (header z-index higher) */
+    background-color: #edf2f4;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  }
+
+  .catalogo {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    padding: 10px;
+  }
+
+  .producto {
+    margin: 10px auto;
+    width: 95%;
+  }
+
+  .whatsapp-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  #paginacion {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.2rem;
+  }
+
+  .precio {
+    font-size: 1rem;
+  }
+
+  .producto h3 {
+    font-size: 0.95rem;
+  }
+
+  .producto p {
+    font-size: 0.8rem;
+  }
+}
+
+
+.menu-btn {
+  display: none;
+  background-color: #2b2d42;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin: 10px auto;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  /* Posición dentro del header; se mostrará en mobile mediante media query */
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.menu-btn:hover {
+  background-color: #3f4566;
+}
+
+/* Mostrar solo en pantallas chicas */
+@media (max-width: 768px) {
+  .menu-btn {
+    display: block;
+  }
+
+  aside {
+    display: none;
+    width: 100%;
+    background-color: #edf2f4;
+    padding: 10px;
+    border-bottom: 2px solid #ccc;
+  }
+
+  aside.activo {
+    display: block;
+  }
+}

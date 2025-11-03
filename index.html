@@ -24,7 +24,9 @@
       <div>📍 Esteban de luca 1647</div>
       <div>📞 (011) 1234-5678</div>
     </div>
+    <button id="menu-toggle" class="menu-btn">☰ Categorías</button>
   </header>
+
 
    <!-- CONTENIDO PRINCIPAL -->
 
@@ -51,6 +53,10 @@
     const RANGE = "Hoja1!A2:E"; // A=Nombre, B=Descripción, C=Precio, D=Imagen_URL, E=Categoría
     const NUMERO_WHATSAPP = "5492944165050"
     let categoriasSet = new Set();
+    let paginaActual = 1;
+    const productosPorPagina = 8;
+    let productosFiltrados = [];
+    let productosData = [];
 
 
     async function cargarProductos() {
@@ -68,9 +74,10 @@
           productosData.forEach(fila => {
           const categoria = fila[4] || "Sin categoría";
           categoriasSet.add(categoria);
-});
+        }
+      );
 
-          // 🔹 Generamos la barra lateral de forma automática
+         // 🔹 Generamos la barra lateral de forma automática
           renderizarCategorias();
 
         if (!data.values || data.values.length === 0) {
@@ -99,7 +106,10 @@
           `;
         });
 
-        contenedor.innerHTML = html;
+        /* contenedor.innerHTML = html; */
+        renderizarPagina(1);
+        crearControlesPaginacion();
+
       } catch (error) {
         console.error("Error al cargar datos:", error);
         document.getElementById("loading").innerText = "❌ Error al cargar los productos.";
@@ -109,15 +119,28 @@
     // 🔍 Filtro del buscador
     document.getElementById("buscador").addEventListener("input", e => {
       const filtro = e.target.value.toLowerCase();
-      const productos = document.querySelectorAll(".producto");
+      
+  // 🔹 Filtrar productos por nombre o descripción
+  productosFiltrados = productosData.filter(fila => {
+    const nombre = fila[0]?.toLowerCase() || "";
+    const descripcion = fila[1]?.toLowerCase() || "";
+    return nombre.includes(filtro) || descripcion.includes(filtro);
+  });
+
+  // 🔹 Reiniciar a la primera página
+  paginaActual = 1;
+  renderizarPagina(paginaActual);
+  crearControlesPaginacion();
+});
+/*       const productos = document.querySelectorAll(".producto");
       productos.forEach(p => {
         const nombre = p.querySelector("h3").textContent.toLowerCase();
         const descripcion = p.querySelector("p").textContent.toLowerCase();
-        p.style.display = (nombre.includes(filtro) || descripcion.includes(filtro)) ? "block" : "none";
-      });
-    });
+        p.style.display = (nombre.includes(filtro) || descripcion.includes(filtro)) ? "block" : "none"; */
 
-      function renderizarCategorias() {
+       
+
+/*       function renderizarCategorias() {
         const contenedor = document.getElementById("lista-categorias");
         contenedor.innerHTML = ""; // Limpiar categorías previas
 
@@ -151,9 +174,267 @@
       });
     });
   });
+} */
+
+function renderizarCategorias() {
+  const contenedor = document.getElementById("lista-categorias");
+  contenedor.innerHTML = ""; // Limpiar categorías previas
+
+  // 🔹 Crear la opción "Todas"
+  const todas = document.createElement("div");
+  todas.className = "categoria activa";
+  todas.dataset.cat = "todas";
+  todas.textContent = "Todas";
+  contenedor.appendChild(todas);
+
+  // 🔹 Crear categoría por cada valor único y contar cuántos productos tiene
+  const conteoCategorias = {};
+  productosData.forEach(fila => {
+    const categoria = fila[4] || "Sin categoría";
+    conteoCategorias[categoria] = (conteoCategorias[categoria] || 0) + 1;
+  });
+
+  // 🔹 Reseteo automático de página al cambiar de categoría
+paginaActual = 1;
+renderizarPagina(paginaActual);
+crearControlesPaginacion();
+
+  [...categoriasSet].sort().forEach(cat => {
+    const item = document.createElement("div");
+    item.className = "categoria";
+    item.dataset.cat = cat;
+    item.textContent = `${cat} (${conteoCategorias[cat] || 0})`;
+
+    // 🔹 Si no hay productos, marcar como desactivado
+    if (!conteoCategorias[cat]) {
+      item.classList.add("inactiva");
+      item.style.pointerEvents = "none";
+      item.style.opacity = "0.5";
+    }
+
+    contenedor.appendChild(item);
+  });
+
+  // 🔹 Asignar eventos de clic a las categorías activas
+  document.querySelectorAll(".categoria:not(.inactiva)").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".categoria").forEach(c => c.classList.remove("activa"));
+      btn.classList.add("activa");
+
+      const cat = btn.dataset.cat;
+      // 🔹 Filtrar productos por categoría
+productosFiltrados = productosData.filter(fila => {
+  const categoriaFila = fila[4] || "Sin categoría";
+  return cat === "todas" || categoriaFila === cat;
+});
+
+// 🔹 Reiniciar paginación
+paginaActual = 1;
+renderizarPagina(paginaActual);
+crearControlesPaginacion();
+    });
+  });
+}
+function renderizarPagina(pagina) {
+  const contenedor = document.getElementById("productos");
+  const inicio = (pagina - 1) * productosPorPagina;
+  const fin = inicio + productosPorPagina;
+
+  const productosPagina = (productosFiltrados.length > 0 ? productosFiltrados : productosData).slice(inicio, fin);
+  let html = "";
+
+  productosPagina.forEach(fila => {
+    const [nombre, descripcion, precio, imagen, categoria] = fila;
+    const mensaje = encodeURIComponent(`Hola, estoy interesado en el producto "${nombre}"`);
+    const linkWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${mensaje}`;
+
+    html += `
+      <div class="producto" data-cat="${categoria || 'Sin categoría'}">
+        <img src="${imagen || 'sin-imagen.jpg'}" alt="${nombre}" onerror="this.src='sin-imagen.jpg';">
+        <div class="info">
+          <h3>${nombre || 'Sin nombre'}</h3>
+          <p>${descripcion || 'Sin descripción'}</p>
+          <span class="precio">${precio || ''}</span>
+          <a class="whatsapp-btn" href="${linkWhatsApp}" target="_blank" title="Consultar por WhatsApp">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png" alt="WhatsApp" />
+          </a>
+        </div>
+      </div>
+    `;
+  });
+
+  contenedor.innerHTML = html;
 }
 
+function crearControlesPaginacion() {
+  const totalProductos = productosFiltrados.length > 0 ? productosFiltrados.length : productosData.length;
+  const totalPaginas = Math.ceil(totalProductos / productosPorPagina);
+  
+  const main = document.querySelector("main");
+  let paginacion = document.getElementById("paginacion");
+
+  // Si existe el div de paginación pero no hay suficientes productos, lo eliminamos
+  if (paginacion && totalPaginas <= 1) {
+    paginacion.remove();
+    return;
+  }
+
+  // Si no hay suficientes productos para paginar, no creamos el control
+  if (totalPaginas <= 1) {
+    return;
+  }
+
+  if (!paginacion) {
+    paginacion = document.createElement("div");
+    paginacion.id = "paginacion";
+    paginacion.style.textAlign = "center";
+    paginacion.style.margin = "20px";
+    main.appendChild(paginacion);
+  }
+
+paginacion.innerHTML = `
+  <button id="primera" ${paginaActual === 1 ? "disabled" : ""}>⏮️</button>
+  <button id="anterior" ${paginaActual === 1 ? "disabled" : ""}>⬅️</button>
+  <span style="margin: 0 10px;">Página ${paginaActual} de ${totalPaginas}</span>
+  <button id="siguiente" ${paginaActual === totalPaginas ? "disabled" : ""}>➡️</button>
+  <button id="ultima" ${paginaActual === totalPaginas ? "disabled" : ""}>⏭️</button>
+`;
+
+document.getElementById("primera").addEventListener("click", () => {
+  paginaActual = 1;
+  renderizarPagina(paginaActual);
+  crearControlesPaginacion();
+});
+document.getElementById("ultima").addEventListener("click", () => {
+  paginaActual = totalPaginas;
+  renderizarPagina(paginaActual);
+  crearControlesPaginacion();
+});
+
+  document.getElementById("anterior").addEventListener("click", () => {
+    if (paginaActual > 1) {
+      paginaActual--;
+      renderizarPagina(paginaActual);
+      crearControlesPaginacion();
+    }
+  });
+
+  document.getElementById("siguiente").addEventListener("click", () => {
+    if (paginaActual < totalPaginas) {
+      paginaActual++;
+      renderizarPagina(paginaActual);
+      crearControlesPaginacion();
+      
+    }
+  });
+}
     cargarProductos();
+
+// 🔹 Menú desplegable (móvil) con backdrop
+const menuBtn = document.getElementById("menu-toggle");
+const aside = document.querySelector("aside");
+
+function closeAsideMobile() {
+  if (!aside) return;
+  aside.classList.remove('activo');
+  const backdrop = document.getElementById('aside-backdrop');
+  if (backdrop) backdrop.classList.remove('visible');
+  // small delay to allow transition
+  setTimeout(() => {
+    if (backdrop && backdrop.parentNode) backdrop.parentNode.removeChild(backdrop);
+  }, 220);
+  document.body.style.overflow = '';
+}
+
+function openAsideMobile() {
+  if (!aside) return;
+  // create backdrop if not present
+  let backdrop = document.getElementById('aside-backdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.id = 'aside-backdrop';
+    backdrop.className = 'aside-backdrop';
+    document.body.appendChild(backdrop);
+    backdrop.addEventListener('click', closeAsideMobile);
+  }
+  // show
+  setTimeout(() => backdrop.classList.add('visible'), 10);
+  aside.classList.add('activo');
+  document.body.style.overflow = 'hidden'; // prevent background scroll
+}
+
+menuBtn.addEventListener('click', () => {
+  if (aside.classList.contains('activo')) closeAsideMobile();
+  else openAsideMobile();
+});
+
+// Ajuste dinámico del offset del aside para quedar justo debajo del header
+// Ajuste dinámico del offset del aside para quedar justo debajo del header
+function actualizarOffsetAside() {
+  const header = document.querySelector('header');
+  const asideEl = document.querySelector('aside');
+  if (!header || !asideEl) return;
+
+  // calcular altura real del header (incluye padding y bordes)
+  const alturaHeader = Math.ceil(header.getBoundingClientRect().height);
+
+  // aplicar como top al aside (sticky) para que no se superponga
+  asideEl.style.top = alturaHeader + 'px';
+}
+
+// Debounced scheduler usando requestAnimationFrame para evitar recalculos excesivos
+let rafId = null;
+function scheduleActualizarAside() {
+  if (rafId) cancelAnimationFrame(rafId);
+  rafId = requestAnimationFrame(() => {
+    actualizarOffsetAside();
+    rafId = null;
+  });
+}
+
+// Observadores y listeners para cambios en el header
+window.addEventListener('load', scheduleActualizarAside);
+window.addEventListener('resize', scheduleActualizarAside);
+
+// ResizeObserver para detectar cambios de tamaño del header
+if (window.ResizeObserver) {
+  try {
+    const ro = new ResizeObserver(scheduleActualizarAside);
+    const headerEl = document.querySelector('header');
+    if (headerEl) ro.observe(headerEl);
+  } catch (e) {
+    // noop
+  }
+}
+
+// MutationObserver para cambios en el contenido del header
+try {
+  const headerEl = document.querySelector('header');
+  if (headerEl && window.MutationObserver) {
+    const mo = new MutationObserver(scheduleActualizarAside);
+    mo.observe(headerEl, { attributes: true, childList: true, subtree: true, characterData: true });
+  }
+} catch (e) {
+  // noop
+}
+
+// Asegurar recalculo cuando las imágenes del header terminen de cargar
+document.querySelectorAll('header img').forEach(img => {
+  if (img.complete) return;
+  img.addEventListener('load', scheduleActualizarAside);
+  img.addEventListener('error', scheduleActualizarAside);
+});
+
+// También actualizar después de cargar los productos (por si cambian tamaños)
+const originalCargar = cargarProductos;
+cargarProductos = async function() {
+  await originalCargar();
+  // pequeño timeout por si el DOM cambia por renderizado
+  setTimeout(scheduleActualizarAside, 50);
+};
+
+// Por seguridad, actualizar al inicio (sin bloquear)
+scheduleActualizarAside();
   </script>
 </body>
 </html>
