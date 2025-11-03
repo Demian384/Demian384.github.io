@@ -224,6 +224,7 @@ aside.activo {
       position: sticky;
       top: 0; /* sticky dentro del flujo principal (queda debajo del header) */
       align-self: stretch; /* estira para ocupar la altura del .main-container */
+      overflow-y: auto;
       flex-shrink: 0; /* no permitir que se encoja en pantallas grandes */
     }
 
