@@ -20,22 +20,20 @@
                 <span>Bazar "Zar"</span>
             </div>
 
-            <div class="search-contact-container">
-                <div class="search-bar">
-                    <label for="buscador" class="sr-only">Buscar productos</label>
-                    <input type="text" 
-                           id="buscador" 
-                           name="buscador"
-                           placeholder="Buscar productos..."
-                           aria-label="Buscar productos">
-                </div>
+            <div class="search-bar">
+                <label for="buscador" class="sr-only">Buscar productos</label>
+                <input type="text" 
+                       id="buscador" 
+                       name="buscador"
+                       placeholder="Buscar productos..."
+                       aria-label="Buscar productos">
+            </div>
 
-                <div class="contact-info">
-                    <address>
-                        <div>📍 Esteban de Luca 1647</div>
-                        <div>📞 <a href="tel:01112345678">(011) 1234-5678</a></div>
-                    </address>
-                </div>
+            <div class="contact-info">
+                <address>
+                    <div>📍 Esteban de Luca 1647</div>
+                    <div>📞 <a href="tel:01112345678">(011) 1234-5678</a></div>
+                </address>
             </div>
             
             <button id="menu-toggle" 
@@ -386,12 +384,14 @@ function openAsideMobile() {
     document.body.appendChild(backdrop);
     backdrop.addEventListener('click', closeAsideMobile);
   }
-  // Ajustar el aside justo debajo del header dinámicamente
+
+    // Ajustar el aside justo debajo del header dinámicamente
   const header = document.querySelector('header');
   if (header) {
     const headerHeight = header.getBoundingClientRect().height;
     aside.style.top = `${headerHeight}px`;
   }
+  
   // show
   setTimeout(() => backdrop.classList.add('visible'), 10);
   aside.classList.add('activo');
