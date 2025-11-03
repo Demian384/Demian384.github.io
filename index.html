@@ -339,6 +339,7 @@ function closeAsideMobile() {
   aside.classList.remove('activo');
   const backdrop = document.getElementById('aside-backdrop');
   if (backdrop) backdrop.classList.remove('visible');
+  
   // small delay to allow transition
   setTimeout(() => {
     if (backdrop && backdrop.parentNode) backdrop.parentNode.removeChild(backdrop);
@@ -368,7 +369,6 @@ menuBtn.addEventListener('click', () => {
   else openAsideMobile();
 });
 
-// Ajuste dinámico del offset del aside para quedar justo debajo del header
 // Ajuste dinámico del offset del aside para quedar justo debajo del header
 function actualizarOffsetAside() {
   const header = document.querySelector('header');
