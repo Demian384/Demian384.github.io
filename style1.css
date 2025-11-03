@@ -588,3 +588,8 @@ aside {
         padding: 0;
     }
 }
+
+input, textarea {
+    user-select: text;
+    caret-color: auto;
+}
