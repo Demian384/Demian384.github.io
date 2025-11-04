@@ -397,16 +397,16 @@ aside {
     }
     
 /* Paginación */
-#paginacion {
+/* #paginacion {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: var(--spacing-sm);
     flex-wrap: wrap;
     margin: var(--spacing-xl) 0;
-  }
+  } */
 
-    #paginacion button {
+/*     #paginacion button {
         background-color: var(--color-primary);
         color: var(--color-white);
         border: none;
@@ -437,7 +437,7 @@ aside {
         font-weight: var(--font-weight-bold);
         color: var(--color-primary);
         font-size: var(--text-base);
-    }
+    } */
 
 /* ====== 📱 Diseño responsive ====== */
 
@@ -713,3 +713,67 @@ input, textarea {
   }
 }
 
+/* === 🎨 Paginación minimalista tipo Danbooru === */
+#paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  position: relative;
+  top: -10px;
+  flex-wrap: wrap;
+  user-select: none;
+}
+
+.page-btn {
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 1rem;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: #e2e2e2;
+}
+
+.page-btn.active {
+  background: #2b2d42;
+  color: white;
+  font-weight: bold;
+}
+
+.page-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* === 🎨 Compactar catálogo para diseño más denso === */
+.catalogo {
+  gap: 12px;
+  padding: 10px 10px 0;
+}
+
+.producto {
+  padding: 6px;
+  margin-bottom: 0;
+}
+
+.producto img {
+  height: 130px;
+}
+
+main {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+main h1 {
+  margin-bottom: 6px;
+  font-size: 1.2rem;
+}

@@ -295,49 +295,40 @@ function renderizarPagina(pagina) {
 function crearControlesPaginacion() {
   const totalProductos = productosFiltrados.length > 0 ? productosFiltrados.length : productosData.length;
   const totalPaginas = Math.ceil(totalProductos / productosPorPagina);
-  
+
   const main = document.querySelector("main");
   let paginacion = document.getElementById("paginacion");
 
-  // Si existe el div de paginación pero no hay suficientes productos, lo eliminamos
   if (paginacion && totalPaginas <= 1) {
     paginacion.remove();
     return;
   }
-
-  // Si no hay suficientes productos para paginar, no creamos el control
-  if (totalPaginas <= 1) {
-    return;
-  }
+  if (totalPaginas <= 1) return;
 
   if (!paginacion) {
     paginacion = document.createElement("div");
     paginacion.id = "paginacion";
-    paginacion.style.textAlign = "center";
-    paginacion.style.margin = "20px";
     main.appendChild(paginacion);
   }
 
-paginacion.innerHTML = `
-  <button id="primera" ${paginaActual === 1 ? "disabled" : ""}>⏮️</button>
-  <button id="anterior" ${paginaActual === 1 ? "disabled" : ""}>⬅️</button>
-  <span style="margin: 0 10px;">Página ${paginaActual} de ${totalPaginas}</span>
-  <button id="siguiente" ${paginaActual === totalPaginas ? "disabled" : ""}>➡️</button>
-  <button id="ultima" ${paginaActual === totalPaginas ? "disabled" : ""}>⏭️</button>
-`;
+  // 🔹 Generamos HTML minimalista
+  let html = `<button class="page-btn prev" ${paginaActual === 1 ? "disabled" : ""}>&lt;</button>`;
 
-document.getElementById("primera").addEventListener("click", () => {
-  paginaActual = 1;
-  renderizarPagina(paginaActual);
-  crearControlesPaginacion();
-});
-document.getElementById("ultima").addEventListener("click", () => {
-  paginaActual = totalPaginas;
-  renderizarPagina(paginaActual);
-  crearControlesPaginacion();
-});
+  // 🔹 Mostrar un rango de páginas centrado en la actual
+  const rango = 2; // cantidad de páginas visibles alrededor
+  const inicio = Math.max(1, paginaActual - rango);
+  const fin = Math.min(totalPaginas, paginaActual + rango);
 
-  document.getElementById("anterior").addEventListener("click", () => {
+  for (let i = inicio; i <= fin; i++) {
+    html += `<button class="page-btn num ${i === paginaActual ? "active" : ""}" data-page="${i}">${i}</button>`;
+  }
+
+  html += `<button class="page-btn next" ${paginaActual === totalPaginas ? "disabled" : ""}>&gt;</button>`;
+
+  paginacion.innerHTML = html;
+
+  // 🔹 Eventos
+  paginacion.querySelector(".prev")?.addEventListener("click", () => {
     if (paginaActual > 1) {
       paginaActual--;
       renderizarPagina(paginaActual);
@@ -345,15 +336,23 @@ document.getElementById("ultima").addEventListener("click", () => {
     }
   });
 
-  document.getElementById("siguiente").addEventListener("click", () => {
+  paginacion.querySelector(".next")?.addEventListener("click", () => {
     if (paginaActual < totalPaginas) {
       paginaActual++;
       renderizarPagina(paginaActual);
       crearControlesPaginacion();
-      
     }
   });
+
+  paginacion.querySelectorAll(".num").forEach(btn => {
+    btn.addEventListener("click", () => {
+      paginaActual = parseInt(btn.dataset.page);
+      renderizarPagina(paginaActual);
+      crearControlesPaginacion();
+    });
+  });
 }
+
     cargarProductos();
 
 // 🔹 Menú desplegable (móvil) con backdrop
@@ -391,7 +390,7 @@ function openAsideMobile() {
     const headerHeight = header.getBoundingClientRect().height;
     aside.style.top = `${headerHeight}px`;
   }
-  
+
   // show
   setTimeout(() => backdrop.classList.add('visible'), 10);
   aside.classList.add('activo');
